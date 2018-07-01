@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+
+</head>
+
+<body>
+<a href="/ws">温湿度显示</a>
+<a href="/qy">气压雨量显示</a>
+<a href="/fsfx">风速风向显示</a>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="left:1%;top:10%;width: 900px;height:600px;"></div>
+
+<script type="text/javascript" src="static/jquery-3.3.1.js"></script>
+<script type="text/javascript" src="static/echarts.min.js"></script>
+<script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('main'));
+         // 显示标题，图例和空的坐标轴
+        var  option = {
+            title: {
+                text: '两小时内温度湿度图',
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    animation: false
+                }
+            },
+            legend: {
+                data:['温度','湿度'],
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            axisPointer: {
+                link: {
+                    xAxisIndex: 'all'
+                }
+            },
+            dataZoom: [{
+                show: true,
+                realtime: true,
+                start: 30,
+                end: 70,
+                xAxisIndex: [0, 1]
+                }, {
+                    type: 'inside',
+                    realtime: true,
+                    start: 30,
+                    end: 70,
+                    xAxisIndex: [0, 1]
+                }
+            ],
+            grid: [{
+                left: 50,
+                right: 50,
+                height: '35%'
+            },{
+                left: 50,
+                right: 50,
+                top: '55%',
+                height: '35%'
+            }],
+            xAxis : [{
+                type : 'category',
+                boundaryGap : false,
+                data:[]
+            },{
+                gridIndex: 1,
+                type : 'category',
+                boundaryGap : false,
+                data: []
+//                position: 'top'
+            }],
+            yAxis : [{
+                name : '温度(℃ )',
+                type : 'value',
+                scale:true,
+                axisLabel: {
+                    formatter: '{value}°C'
+                }
+            },{
+                gridIndex: 1,
+                name : '湿度(%)',
+                type : 'value',
+                scale:true,
+                axisLabel: {
+                    formatter: '{value}%'
+                }
+//                inverse: true
+            }],
+            series : [{
+                name:'温度',
+                type:'line',
+//                hoverAnimation: true,
+                data:[],
+                markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name: '平均值'}
+                        ]
+                    }
+            }, {
+                name:'湿度',
+                type:'bar',
+                xAxisIndex: 1,
+                yAxisIndex: 1,
+                data: [],
+                markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name: '平均值'}
+                        ]
+                    }
+            }]
+        };
+        myChart.setOption(option);
+        myChart.showLoading();    //数据加载完之前先显示一段简单的loading动画
+
+                setInterval(function () {
+         $.ajax({
+         type : "post", async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+         url : "/wsshow",    //请求发送到Servlet处
+         dataType : "json",        //返回数据形式为json
+         contentType:"application/json",
+         success : function(result) {
+                     var names=[];    //名称数组（实际用来盛放X轴坐标值）
+        var wendu=[];    //数量数组（实际用来盛放Y坐标值）
+        var shidu=[];
+             //请求成功时执行该函数内容，result即为服务器返回的json对象
+             if (result) {
+              for(var i=0;i<result.length;i++){
+                  names.push(result[i]["hour"]);    //挨个取出名称并填入类别数组
+              }
+              for(var i=0;i<result.length;i++){
+                  wendu.push(result[i]["wendu"]);    //挨个取出数量并填入销量数组
+              }
+              for(var i=0;i<result.length;i++){
+                  shidu.push(result[i]["shidu"]);    //挨个取出数量并填入销量数组
+              }
+              myChart.hideLoading();
+              myChart.setOption({
+                  xAxis : [{
+                      data:names
+                  },{
+                      gridIndex: 1,
+                      data:names,
+                  }],
+                  series : [{
+                      data:wendu
+                  }, {
+                      xAxisIndex: 1,
+                      yAxisIndex: 1,
+                      data: shidu
+                  }]
+              });
+             }
+             },
+         error : function(errorMsg) {
+             //请求失败时执行该函数
+         alert("图表请求数据失败!");
+         myChart.hideLoading();
+         }
+    })
+                                },5000)      // 修改时间 5000 == 5s
+    </script>
+</body>
+</html>

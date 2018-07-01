@@ -1,0 +1,477 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+	    <style>
+        .content {
+            width: 1000px;
+            height: 2000px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+	
+
+
+<body>
+    <div class="content" id="wendu-area"></div>
+    <div class="content" id="shidu-area"></div>
+	<div class="content" id="yuliang-area"></div>
+    <div class="content" id="fengsu-area"></div>
+	<div class="content" id="qiya-area"></div>
+    <div class="content" id="fengxiang-area"></div>
+</body>
+  风速  风向
+</html>
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.js"></script>
+<script src="https://cdn.bootcss.com/echarts/3.8.5/echarts-en.common.js"></script>
+    <script type="text/javascript" >
+	    var xHours=[];    //名称数组（实际用来盛放X轴坐标值）
+        var wendu=[];    //数量数组（实际用来盛放Y坐标值）
+        var shidu=[];
+		var yuliang=[];    //数量数组（实际用来盛放Y坐标值）
+        var fengsu=[];
+		var qiya=[];    //数量数组（实际用来盛放Y坐标值）
+        var fengxiang=[];
+        var wenduChart = echarts.init(document.getElementById('wendu-area'));
+		var shiduChart = echarts.init(document.getElementById('shidu-area'));
+		var yuliangChart = echarts.init(document.getElementById('yuliang-area'));
+		var fengsuChart = echarts.init(document.getElementById('fengsu-area'));
+		var qiyaChart = echarts.init(document.getElementById('qiya-area'));
+		var fengxiangChart = echarts.init(document.getElementById('fengxiang-area'));
+         // 显示标题，图例和空的坐标轴
+        var  wenduoption = {
+            title: {
+                text: '温度',
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    animation: true
+                }
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },calculable : true,
+            axisPointer: {
+                link: {
+                    xAxisIndex: 'all'
+                }
+            },
+            dataZoom: [{
+                show: true,
+                realtime: true,
+                start: 30,
+                end: 70,
+                xAxisIndex: [0]
+                }, {
+                    type: 'inside',
+                    realtime: true,
+                    start: 30,
+                    end: 70,
+                    xAxisIndex: [0]
+                }
+            ],
+            xAxis : [{
+                type : 'category',
+                boundaryGap : false,
+                data : xHours,
+            }],
+            yAxis : [
+				{
+					name : '温度(℃ )',
+					type : 'value',
+					scale:true,
+					axisLabel: {
+						formatter: '{value}°C'
+					}
+				}
+			],
+            series : [
+			{
+                name:'温度',
+                type:'line',
+//                hoverAnimation: true,
+                data:wendu,
+                markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name: '平均值'}
+                        ]
+                    }
+            }
+			]
+        };
+        var  shiduoption = {
+            title: {
+                text: '湿度',
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    animation: true
+                }
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },calculable : true,
+            axisPointer: {
+                link: {
+                    xAxisIndex: 'all'
+                }
+            },
+            dataZoom: [{
+                show: true,
+                realtime: true,
+                start: 30,
+                end: 70,
+                xAxisIndex: [0]
+                }, {
+                    type: 'inside',
+                    realtime: true,
+                    start: 30,
+                    end: 70,
+                    xAxisIndex: [0]
+                }
+            ],
+            xAxis : [{
+                type : 'category',
+                boundaryGap : false,
+                data : xHours,
+            }],
+            yAxis : [
+				{
+					name : '湿度(%)',
+					type : 'value',
+					scale:true,
+					axisLabel: {
+						formatter: '{value}%'
+					}
+				}
+			],
+            series : [
+			{
+                name:'湿度',
+                type:'line',
+//                hoverAnimation: true,
+                data:wendu,
+                markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name: '平均值'}
+                        ]
+                    }
+            }
+			]
+        };
+        var  yuliangoption = {
+            title: {
+                text: '雨量',
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    animation: true
+                }
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },calculable : true,
+            axisPointer: {
+                link: {
+                    xAxisIndex: 'all'
+                }
+            },
+            dataZoom: [{
+                show: true,
+                realtime: true,
+                start: 30,
+                end: 70,
+                xAxisIndex: [0]
+                }, {
+                    type: 'inside',
+                    realtime: true,
+                    start: 30,
+                    end: 70,
+                    xAxisIndex: [0]
+                }
+            ],
+            xAxis : [{
+                type : 'category',
+                boundaryGap : false,
+                data : xHours,
+            }],
+            yAxis : [
+				{
+					name : '雨量(mm)',
+					type : 'value',
+					scale:true,
+					axisLabel: {
+						formatter: '{value}mm'
+					}
+				}
+			],
+            series : [
+			{
+                name:'雨量',
+                type:'line',
+//                hoverAnimation: true,
+                data:wendu,
+                markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name: '平均值'}
+                        ]
+                    }
+            }
+			]
+        };
+        var  fengsuoption = {
+            title: {
+                text: '风速',
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    animation: true
+                }
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },calculable : true,
+            axisPointer: {
+                link: {
+                    xAxisIndex: 'all'
+                }
+            },
+            dataZoom: [{
+                show: true,
+                realtime: true,
+                start: 30,
+                end: 70,
+                xAxisIndex: [0]
+                }, {
+                    type: 'inside',
+                    realtime: true,
+                    start: 30,
+                    end: 70,
+                    xAxisIndex: [0]
+                }
+            ],
+            xAxis : [{
+                type : 'category',
+                boundaryGap : false,
+                data : xHours,
+            }],
+            yAxis : [
+				{
+					name : '风速(m/s)',
+					type : 'value',
+					scale:true,
+					axisLabel: {
+						formatter: '{value}m/s'
+					}
+				}
+			],
+            series : [
+			{
+                name:'风速',
+                type:'line',
+//                hoverAnimation: true,
+                data:wendu,
+                markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name: '平均值'}
+                        ]
+                    }
+            }
+			]
+        };
+        var  qiyaoption = {
+            title: {
+                text: '气压',
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    animation: true
+                }
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },calculable : true,
+            axisPointer: {
+                link: {
+                    xAxisIndex: 'all'
+                }
+            },
+            dataZoom: [{
+                show: true,
+                realtime: true,
+                start: 30,
+                end: 70,
+                xAxisIndex: [0]
+                }, {
+                    type: 'inside',
+                    realtime: true,
+                    start: 30,
+                    end: 70,
+                    xAxisIndex: [0]
+                }
+            ],
+            xAxis : [{
+                type : 'category',
+                boundaryGap : false,
+                data : xHours,
+            }],
+            yAxis : [
+				{
+					name : '气压(Pha)',
+					type : 'value',
+					scale:true,
+					axisLabel: {
+						formatter: '{value}Pha'
+					}
+				}
+			],
+            series : [
+			{
+                name:'气压',
+                type:'line',
+//                hoverAnimation: true,
+                data:wendu,
+                markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name: '平均值'}
+                        ]
+                    }
+            }
+			]
+        };
+		
+        wenduChart.setOption(wenduoption);
+		shiduChart.setOption(shiduoption);
+		yuliangChart.setOption(yuliangoption);
+		fengsuChart.setOption(fengsuoption);
+		qiyaChart.setOption(qiyaoption);
+		
+        wenduChart.showLoading();    //数据加载完之前先显示一段简单的loading动画
+		yuliangChart.showLoading();    //数据加载完之前先显示一段简单的loading动画
+		shiduChart.showLoading();    //数据加载完之前先显示一段简单的loading动画
+		fengsuChart.showLoading();    //数据加载完之前先显示一段简单的loading动画
+		qiyaChart.showLoading();    //数据加载完之前先显示一段简单的loading动画
+
+		function refreshData(wendu, shidu,yuliang,fengsu,qiya,fengxiang){
+			if(!wenduChart || !shiduChart){
+				return;
+			}
+			var wenduOption = wenduChart.getOption();
+			wenduOption.series[0].data = wendu;
+			wenduChart.setOption(wenduOption);
+			
+			var shiduOption = shiduChart.getOption();
+			shiduOption.series[0].data = shidu;
+			shiduChart.setOption(shiduOption);
+			
+			var yuliangoption = yuliangChart.getOption();
+			yuliangoption.series[0].data = yuliang;
+			yuliangChart.setOption(yuliangoption);
+			
+			var fengsuOption = fengsuChart.getOption();
+			fengsuOption.series[0].data = fengsu;
+			fengsuChart.setOption(fengsuOption);
+			
+			var qiyaOption = qiyaChart.getOption();
+			qiyaOption.series[0].data = qiya;
+			qiyaChart.setOption(qiyaOption);
+		}
+		
+    setInterval(function () {
+        // 以此行开始为第1行
+        // 调用接口去掉第3行和第12行前的 '//'   并在第4行前加 '//'
+        $.ajax({
+         type : "post", async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+         url : "/datashow",    //请求发送到Servlet处
+         dataType : "json",        //返回数据形式为json
+         contentType:"application/json",
+         success : function(result)  {
+            xHours = [];  wendu = [];  shidu = [];	yuliang=[]; fengsu=[]; qiya=[]; fengxiang=[];
+	    if (!result) alert('未查询到数据')
+            result.forEach(function (item) {
+                xHours.push(item.hour)
+                wendu.push(item.wendu)
+                shidu.push(item.shidu)
+				yuliang.push(item.yuliang)
+                fengsu.push(item.fengsu)
+                qiya.push(item.qiya)
+				fengxiang.push(item.fengxiang)
+            })
+        })
+        refreshData(wendu, shidu,yuliang,fengsu,qiya,fengxiang)
+    },5000)      // 修改时间 5000 == 5s
+		
+</script>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>charts</title>
+    <style>
+        .content {
+            width: 1000px;
+            height: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="content" id="wendu-area"></div>
+    <div class="content" id="shidu-area"></div>
+</body>
+</html>
+
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.js"></script>
+<script src="https://cdn.bootcss.com/echarts/3.8.5/echarts-en.common.js"></script>
+<script type="text/javascript">
+    var data, xHours = [], wendu = [], shidu = []
+    var wenduChart = echarts.init(document.getElementById('wendu-area'));
+    var shiduChart = echarts.init(document.getElementById('shidu-area'));
+
+    // 以此行开始为第1行
+    // 调用接口去掉第2行和第11行前的 '//'   并在第4行前加 '//'
+    $.post('/datashow', function (data) {
+ //data = [{'hour':'1525323820','wendu':'417','shidu':'54'},{'hour':'1525323822','wendu':'471','shidu':'54'},{'hour':'1525323824','wendu':'370','shidu':'54'},{'hour':'1525323826','wendu':'448','shidu':'54'},{'hour':'1525323828','wendu':'448','shidu':'54'},{'hour':'1525323830','wendu':'365','shidu':'53'},{'hour':'1525323832','wendu':'472','shidu':'54'},{'hour':'1525323834','wendu':'422','shidu':'53'},{'hour':'1525323836','wendu':'356','shidu':'53'}]
+        if (!data) alert('未查询到数据')
+	data.forEach(function (item) {
+            xHours.push(item.hour)
+            wendu.push(item.wendu)
+            shidu.push(item.shidu)
+        })
+    })
+
+    // 温度折线图配置
+    var wenduOption = {
+        title : {
+            text: '气温变化',   // 标题
+            subtext: '折线图'   // 子标题
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'category',
+                boundaryGap : false,
+                data : xHours,
+                name: '时间 /s'   // X轴单位
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                axisLabel : {
+                    formatter: '{value} °C'     // Y轴单位
+                }
+            }
+        ],
+        series : [
+            {
+                name:'气温',
+                type:'line',
+                data:wendu,
+                color:'red', // 温度折线颜色
+                markPoint : {
+                    data : [
+                        {type : 'max', name: '最大值'},
+                        {type : 'min', name: '最小值'}
+                    ]
+                },
+                markLine : {
+                    data : [
+                        {type : 'average', name: '平均值'}
+                    ]
+                }
+            }
+        ]
+    };
+
+    // 湿度折线图配置
+    var shiduOption = {
+        title : {
+            text: '湿度变化',
+            subtext: '折线图'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'category',
+                boundaryGap : false,
+                data : xHours,
+                name: '时间 /s'   // X轴单位
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                axisLabel : {
+                    formatter: '{value} %RH'    // Y轴单位
+                }
+            }
+        ],
+        series : [
+            {
+                name:'湿度',
+                type:'line',
+                color:'#3fb3fa',    // 湿度折线颜色
+                data:shidu,
+                markPoint : {
+                    data : [
+                        {type : 'max', name: '最大值'},
+                        {type : 'min', name: '最小值'}
+                    ]
+                },
+                markLine : {
+                    data : [
+                        {type : 'average', name: '平均值'}
+                    ]
+                }
+            }
+        ]
+    };
+    wenduChart.setOption(wenduOption)
+    shiduChart.setOption(shiduOption)
+
+    function refreshData(wendu, shidu){
+        if(!wenduChart || !shiduChart){
+            return;
+        }
+        var wenduOption = wenduChart.getOption();
+        wenduOption.series[0].data = wendu;
+        wenduChart.setOption(wenduOption);
+        var shiduOption = shiduChart.getOption();
+        shiduOption.series[0].data = shidu;
+        shiduChart.setOption(shiduOption);
+    }
+
+    setInterval(function () {
+        // 以此行开始为第1行
+        // 调用接口去掉第3行和第12行前的 '//'   并在第4行前加 '//'
+        $.post('/datashow', function (data) {
+           //data = [{'hour':'1525323820','wendu':'400','shidu':'33'},{'hour':'1525323822','wendu':'455','shidu':'22'},{'hour':'1525323824','wendu':'500','shidu':'38'},{'hour':'1525323826','wendu':'448','shidu':'54'},{'hour':'1525323828','wendu':'448','shidu':'54'},{'hour':'1525323830','wendu':'365','shidu':'53'},{'hour':'1525323832','wendu':'472','shidu':'54'},{'hour':'1525323834','wendu':'422','shidu':'53'},{'hour':'1525323836','wendu':'356','shidu':'53'}]
+            xHours = [];  wendu = [];  shidu = [];
+	    if (!data) alert('未查询到数据')
+            data.forEach(function (item) {
+                xHours.push(item.hour)
+                wendu.push(item.wendu)
+                shidu.push(item.shidu)
+            })
+        })
+        refreshData(wendu, shidu)
+    },1000)      // 修改时间 5000 == 5s
+
+</script>
