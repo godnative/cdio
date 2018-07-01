@@ -73,7 +73,6 @@ def fsjson():
         time_local = time.localtime(x[0])
         value['hour'] = time.strftime("%M:%S", time_local)
         value['fengsu']=int(x[4])*0.01
-
         value['fengxiang']=int(x[6])
         data.append(value)
     return json.dumps(data)
