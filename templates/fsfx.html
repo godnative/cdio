@@ -2,22 +2,19 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>ECharts</title>
-    <!-- 引入 echarts.js -->
+    <title>风速风向显示</title>
 
 </head>
 
 <body>
     <a href="/ws">温湿度显示</a>
 <a href="/qy">气压雨量显示</a>
-<a href="/fsfx">风速风向显示</a><!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-    <ul id="ulul">
-
-        </ul>
+    <a href="/fsfx">风速风向显示</a>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
     <div id="main" style="left:1%;top:10%;width: 900px;height:600px;"></div>
 
-<script type="text/javascript" src="static/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="static/echarts.min.js"></script>
+    <script type="text/javascript" src="static/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="static/echarts.min.js"></script>
 <script type="text/javascript">
         var myChart = echarts.init(document.getElementById('main'));
          // 显示标题，图例和空的坐标轴
@@ -82,7 +79,6 @@
                 type : 'category',
                 boundaryGap : false,
                 data: []
-//                position: 'top'
             }],
             yAxis : [{
                 name : '风速(m/s)',
@@ -99,12 +95,10 @@
                 axisLabel: {
                     formatter: '{value}°'
                 }
-//                inverse: true
             }],
             series : [{
                 name:'风速',
                 type:'line',
-//                hoverAnimation: true,
                 data:[],
                 markPoint : {
                         data : [
